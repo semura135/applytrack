@@ -5,7 +5,7 @@ const statusBadge = {
   Offer: "bg-red-100 text-red-900",
   Rejected: "bg-gray-200 text-gray-700",
 };
-function ApplicationList({ applications }) {
+function ApplicationList({ applications, onDelete }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const filteredApplications = applications.filter((app) => {
@@ -107,6 +107,17 @@ function ApplicationList({ applications }) {
                   {app.notes}
                 </p>
               )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Delete ${app.company}?`)) {
+                    onDelete(app.id);
+                  }
+                }}
+                className="text-xs bg-red-900 text-white hover:bg-red-800 font-medium mt-3 p-2 rounded-lg"
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

@@ -40,7 +40,12 @@ function App() {
         <ApplicationForm
           onAdd={(newApp) => setApplications([...applications, newApp])}
         />
-        <ApplicationList applications={applications} />
+        <ApplicationList
+          applications={applications}
+          onDelete={(id) => {
+            setApplications((prev) => prev.filter((app) => app.id !== id));
+          }}
+        />
       </main>
     </div>
   );
