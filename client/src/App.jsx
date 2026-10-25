@@ -12,13 +12,33 @@ function App() {
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
         <section aria-labelledby="stats-heading">
-          <h2 id="stats-heading">Overview</h2>
-          <ul>
-            <li>Total: 0</li>
-            <li>Applied: 0</li>
-            <li>Interview: 0</li>
-            <li>Offer: 0</li>
-            <li>Rejected: 0</li>
+          <h2
+            id="stats-heading"
+            className="text-lg font-semibold text-gray-900 mb-3"
+          >
+            Overview
+          </h2>
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <li className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-gray-600">Total</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+            </li>
+            <li className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-gray-600">Applied</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+            </li>
+            <li className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-gray-600">Interview</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+            </li>
+            <li className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-gray-600">Offer</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+            </li>
+            <li className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <p className="text-sm text-gray-600">Rejected</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+            </li>
           </ul>
         </section>
         <section aria-labelledby="form-heading">
