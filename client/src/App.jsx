@@ -37,7 +37,9 @@ function App() {
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
         <StatsBar applications={applications} />
-        <ApplicationForm />
+        <ApplicationForm
+          onAdd={(newApp) => setApplications([...applications, newApp])}
+        />
         <ApplicationList applications={applications} />
       </main>
     </div>

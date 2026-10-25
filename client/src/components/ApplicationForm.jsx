@@ -1,4 +1,35 @@
-function ApplicationForm() {
+import { useState } from "react";
+
+function ApplicationForm({ onAdd }) {
+  const [form, setForm] = useState({
+    company: "",
+    title: "",
+    date: "",
+    status: "Applied",
+    url: "",
+    notes: "",
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.company.trim() || !form.title.trim() || !form.date) return;
+    const newApplication = {
+      ...form,
+      id: crypto.randomUUID(),
+    };
+    onAdd(newApplication);
+    setForm({
+      company: "",
+      title: "",
+      date: "",
+      status: "Applied",
+      url: "",
+      notes: "",
+    });
+  };
   return (
     <section aria-labelledby="form-heading">
       <h2
@@ -7,7 +38,10 @@ function ApplicationForm() {
       >
         Add Application
       </h2>
-      <form className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm space-y-4"
+      >
         <div>
           <label
             htmlFor="company"
@@ -19,6 +53,8 @@ function ApplicationForm() {
             id="company"
             name="company"
             type="text"
+            value={form.company}
+            onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
@@ -34,6 +70,8 @@ function ApplicationForm() {
             id="title"
             name="title"
             type="text"
+            value={form.title}
+            onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
@@ -49,6 +87,8 @@ function ApplicationForm() {
             id="date"
             name="date"
             type="date"
+            value={form.date}
+            onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
@@ -63,6 +103,8 @@ function ApplicationForm() {
           <select
             id="status"
             name="status"
+            value={form.status}
+            onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           >
@@ -83,6 +125,8 @@ function ApplicationForm() {
             id="url"
             name="url"
             type="url"
+            value={form.url}
+            onChange={handleChange}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
         </div>
@@ -97,6 +141,8 @@ function ApplicationForm() {
             id="notes"
             name="notes"
             rows="3"
+            value={form.notes}
+            onChange={handleChange}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
         </div>
