@@ -150,30 +150,55 @@ function App() {
             </button>
           </form>
         </section>
+
         <section aria-labelledby="list-heading">
-          <h2 id="list-heading">Applications</h2>
-          <div>
-            <label htmlFor="search">Search</label>
-            <input
-              id="search"
-              type="search"
-              placeholder="Company or job title"
-            />
+          <h2
+            id="list-heading"
+            className="text-lg font-semibold text-gray-900 mb-3"
+          >
+            Applications
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div>
+              <label
+                htmlFor="search"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Search
+              </label>
+              <input
+                id="search"
+                type="search"
+                placeholder="Company or job title"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="filter"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Filter by status
+              </label>
+              <select
+                id="filter"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
+              >
+                <option value="All">All</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="filter">Filter by status</label>
-            <select id="filter">
-              <option value="All">All</option>
-              <option value="Applied">Applied</option>
-              <option value="Interview">Interview</option>
-              <option value="Offer">Offer</option>
-              <option value="Rejected">Rejected</option>
-            </select>
+          <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
+            <p className="text-gray-600 text-sm">
+              No applications yet. Add one above to get started.
+            </p>
           </div>
-          <ul>
-            <li>No applications yet. Add one above.</li>
-          </ul>
         </section>
       </main>
     </div>
