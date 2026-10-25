@@ -7,13 +7,18 @@ const statusBadge = {
 };
 function ApplicationList({ applications }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
   const filteredApplications = applications.filter((app) => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return true;
-    return (
+
+    const matchesSearch =
+      !term ||
       app.company.toLowerCase().includes(term) ||
-      app.title.toLowerCase().includes(term)
-    );
+      app.title.toLowerCase().includes(term);
+
+    const matchesStatus = statusFilter === "All" || app.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
   });
   const noApplications = applications.length === 0;
   const noMatches = filteredApplications.length === 0 && !noApplications;
@@ -52,6 +57,8 @@ function ApplicationList({ applications }) {
           </label>
           <select
             id="filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           >
             <option value="All">All</option>
@@ -71,7 +78,7 @@ function ApplicationList({ applications }) {
       ) : noMatches ? (
         <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
           <p className="text-gray-600 text-sm">
-            No applications match your search.
+            No applications match your search or filter.
           </p>
         </div>
       ) : (
