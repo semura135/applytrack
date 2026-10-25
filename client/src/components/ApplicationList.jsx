@@ -1,3 +1,4 @@
+import { useState } from "react";
 const statusBadge = {
   Applied: "bg-blue-100 text-blue-800",
   Interview: "bg-yellow-100 text-yellow-800",
@@ -5,7 +6,17 @@ const statusBadge = {
   Rejected: "bg-gray-200 text-gray-700",
 };
 function ApplicationList({ applications }) {
-  const isEmpty = applications.length === 0;
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredApplications = applications.filter((app) => {
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return true;
+    return (
+      app.company.toLowerCase().includes(term) ||
+      app.title.toLowerCase().includes(term)
+    );
+  });
+  const noApplications = applications.length === 0;
+  const noMatches = filteredApplications.length === 0 && !noApplications;
   return (
     <section aria-labelledby="list-heading">
       <h2
@@ -27,6 +38,8 @@ function ApplicationList({ applications }) {
             id="search"
             type="search"
             placeholder="Company or job title"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
         </div>
@@ -49,15 +62,21 @@ function ApplicationList({ applications }) {
           </select>
         </div>
       </div>
-      {isEmpty ? (
+      {noApplications ? (
         <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
           <p className="text-gray-600 text-sm">
             No applications yet. Add one above to get started.
           </p>
         </div>
+      ) : noMatches ? (
+        <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
+          <p className="text-gray-600 text-sm">
+            No applications match your search.
+          </p>
+        </div>
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {applications.map((app) => (
+          {filteredApplications.map((app) => (
             <li
               key={app.id}
               className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
