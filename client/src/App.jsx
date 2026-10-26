@@ -14,7 +14,7 @@ function App() {
     const loadApplications = async () => {
       try {
         const data = await api.getAll();
-        setApplications(data);
+        setApplications(data.map((app) => ({ ...app, id: app._id })));
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -31,7 +31,7 @@ function App() {
     api
       .getAll()
       .then((data) => {
-        setApplications(data);
+        setApplications(data.map((app) => ({ ...app, id: app._id })));
         setError(null);
       })
       .catch((err) => {
@@ -77,24 +77,46 @@ function App() {
             <StatsBar applications={applications} />
             <ApplicationForm
               key={editingId || "new"}
-              onAdd={(newApp) => setApplications((prev) => [...prev, newApp])}
+              onAdd={async (newApp) => {
+                try {
+                  const created = await api.create(newApp);
+                  setApplications((prev) => [
+                    { ...created, id: created._id },
+                    ...prev,
+                  ]);
+                } catch (err) {
+                  setError(err.message);
+                }
+              }}
               editingId={editingId}
               applications={applications}
-              onSaveEdit={(id, updatedFields) => {
-                setApplications((prev) =>
-                  prev.map((app) =>
-                    app.id === id ? { ...app, ...updatedFields } : app,
-                  ),
-                );
-                setEditingId(null);
+              onSaveEdit={async (id, updatedFields) => {
+                try {
+                  const updated = await api.update(id, updatedFields);
+                  setApplications((prev) =>
+                    prev.map((app) =>
+                      app.id === id ? { ...updated, id: updated._id } : app,
+                    ),
+                  );
+                  setEditingId(null);
+                } catch (err) {
+                  setError(err.message);
+                }
               }}
               onCancelEdit={() => setEditingId(null)}
             />
             <ApplicationList
               applications={applications}
-              onDelete={(id) =>
-                setApplications((prev) => prev.filter((app) => app.id !== id))
-              }
+              onDelete={async (id) => {
+                try {
+                  await api.remove(id);
+                  setApplications((prev) =>
+                    prev.filter((app) => app.id !== id),
+                  );
+                } catch (err) {
+                  setError(err.message);
+                }
+              }}
               onStartEdit={(id) => setEditingId(id)}
             />
           </>

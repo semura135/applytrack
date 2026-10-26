@@ -43,7 +43,7 @@ function ApplicationForm({
     if (editingId) {
       onSaveEdit(editingId, form);
     } else {
-      onAdd({ ...form, id: crypto.randomUUID() });
+      onAdd(form);
     }
 
     setForm({
