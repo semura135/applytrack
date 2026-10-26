@@ -67,8 +67,24 @@ function App() {
         )}
 
         {loading && (
-          <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
-            <p className="text-gray-600 text-sm">Loading applications...</p>
+          <div className="space-y-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <div
+                  key={n}
+                  className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm animate-pulse"
+                >
+                  <div className="h-3 bg-gray-200 rounded w-16 mb-2" />
+                  <div className="h-6 bg-gray-200 rounded w-10" />
+                </div>
+              ))}
+            </div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm animate-pulse">
+              <div className="h-5 bg-gray-200 rounded w-40 mb-4" />
+              <div className="h-10 bg-gray-200 rounded mb-3" />
+              <div className="h-10 bg-gray-200 rounded mb-3" />
+              <div className="h-10 bg-gray-200 rounded" />
+            </div>
           </div>
         )}
 

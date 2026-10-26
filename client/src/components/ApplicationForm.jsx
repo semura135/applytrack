@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useState, useRef, useEffect } from "react";
 function ApplicationForm({
   onAdd,
   editingId,
@@ -10,6 +9,7 @@ function ApplicationForm({
   const editingApp = editingId
     ? applications.find((app) => app.id === editingId)
     : null;
+  const sectionRef = useRef(null);
 
   const [form, setForm] = useState(
     editingApp
@@ -30,6 +30,11 @@ function ApplicationForm({
           notes: "",
         },
   );
+  useEffect(() => {
+    if (editingId && sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [editingId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +62,7 @@ function ApplicationForm({
   };
 
   return (
-    <section aria-labelledby="form-heading">
+    <section ref={sectionRef} aria-labelledby="form-heading">
       <h2
         id="form-heading"
         className="text-lg font-semibold text-gray-900 mb-3"
