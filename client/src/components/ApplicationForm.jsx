@@ -1,26 +1,51 @@
 import { useState } from "react";
 
-function ApplicationForm({ onAdd }) {
-  const [form, setForm] = useState({
-    company: "",
-    title: "",
-    date: "",
-    status: "Applied",
-    url: "",
-    notes: "",
-  });
+function ApplicationForm({
+  onAdd,
+  editingId,
+  applications,
+  onSaveEdit,
+  onCancelEdit,
+}) {
+  const editingApp = editingId
+    ? applications.find((app) => app.id === editingId)
+    : null;
+
+  const [form, setForm] = useState(
+    editingApp
+      ? {
+          company: editingApp.company,
+          title: editingApp.title,
+          date: editingApp.date,
+          status: editingApp.status,
+          url: editingApp.url || "",
+          notes: editingApp.notes || "",
+        }
+      : {
+          company: "",
+          title: "",
+          date: "",
+          status: "Applied",
+          url: "",
+          notes: "",
+        },
+  );
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.company.trim() || !form.title.trim() || !form.date) return;
-    const newApplication = {
-      ...form,
-      id: crypto.randomUUID(),
-    };
-    onAdd(newApplication);
+
+    if (editingId) {
+      onSaveEdit(editingId, form);
+    } else {
+      onAdd({ ...form, id: crypto.randomUUID() });
+    }
+
     setForm({
       company: "",
       title: "",
@@ -30,13 +55,14 @@ function ApplicationForm({ onAdd }) {
       notes: "",
     });
   };
+
   return (
     <section aria-labelledby="form-heading">
       <h2
         id="form-heading"
         className="text-lg font-semibold text-gray-900 mb-3"
       >
-        Add Application
+        {editingId ? "Edit Application" : "Add Application"}
       </h2>
       <form
         onSubmit={handleSubmit}
@@ -146,12 +172,23 @@ function ApplicationForm({ onAdd }) {
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-red-800"
           />
         </div>
-        <button
-          type="submit"
-          className="bg-red-900 hover:bg-red-800 text-white font-medium px-4 py-2 rounded-md transition-colors"
-        >
-          Add Application
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            className="bg-red-900 hover:bg-red-800 text-white font-medium px-4 py-2 rounded-md transition-colors"
+          >
+            {editingId ? "Save Changes" : "Add Application"}
+          </button>
+          {editingId && (
+            <button
+              type="button"
+              onClick={onCancelEdit}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded-md transition-colors"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
     </section>
   );

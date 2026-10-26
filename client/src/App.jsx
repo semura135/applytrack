@@ -24,6 +24,7 @@ const initialApplications = [
 ];
 function App() {
   const [applications, setApplications] = useState(initialApplications);
+  const [editingId, setEditingId] = useState(null);
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <header className="bg-white border-b border-gray-200">
@@ -38,13 +39,26 @@ function App() {
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
         <StatsBar applications={applications} />
         <ApplicationForm
-          onAdd={(newApp) => setApplications([...applications, newApp])}
+          key={editingId || "new"}
+          onAdd={(newApp) => setApplications((prev) => [...prev, newApp])}
+          editingId={editingId}
+          applications={applications}
+          onSaveEdit={(id, updatedFields) => {
+            setApplications((prev) =>
+              prev.map((app) =>
+                app.id === id ? { ...app, ...updatedFields } : app,
+              ),
+            );
+            setEditingId(null);
+          }}
+          onCancelEdit={() => setEditingId(null)}
         />
         <ApplicationList
           applications={applications}
           onDelete={(id) => {
             setApplications((prev) => prev.filter((app) => app.id !== id));
           }}
+          onStartEdit={(id) => setEditingId(id)}
         />
       </main>
     </div>
