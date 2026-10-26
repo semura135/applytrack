@@ -1,30 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "./api";
 import StatsBar from "./components/StatsBar";
-import ApplicationList from "./components/ApplicationList";
 import ApplicationForm from "./components/ApplicationForm";
-const initialApplications = [
-  {
-    id: 1,
-    company: "Acme Corp",
-    title: "Frontend Engineer",
-    date: "2026-10-15",
-    status: "Applied",
-    url: "https://acme.example.com/jobs/123",
-    notes: "Referred by Sam.",
-  },
-  {
-    id: 2,
-    company: "Beta Labs",
-    title: "Full Stack Developer",
-    date: "2026-10-20",
-    status: "Interview",
-    url: "",
-    notes: "Phone screen scheduled for Friday.",
-  },
-];
+import ApplicationList from "./components/ApplicationList";
+
 function App() {
-  const [applications, setApplications] = useState(initialApplications);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    const loadApplications = async () => {
+      try {
+        const data = await api.getAll();
+        setApplications(data);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadApplications();
+  }, []);
+
+  const refetch = () => {
+    setLoading(true);
+    api
+      .getAll()
+      .then((data) => {
+        setApplications(data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <header className="bg-white border-b border-gray-200">
@@ -37,29 +54,51 @@ function App() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-        <StatsBar applications={applications} />
-        <ApplicationForm
-          key={editingId || "new"}
-          onAdd={(newApp) => setApplications((prev) => [...prev, newApp])}
-          editingId={editingId}
-          applications={applications}
-          onSaveEdit={(id, updatedFields) => {
-            setApplications((prev) =>
-              prev.map((app) =>
-                app.id === id ? { ...app, ...updatedFields } : app,
-              ),
-            );
-            setEditingId(null);
-          }}
-          onCancelEdit={() => setEditingId(null)}
-        />
-        <ApplicationList
-          applications={applications}
-          onDelete={(id) => {
-            setApplications((prev) => prev.filter((app) => app.id !== id));
-          }}
-          onStartEdit={(id) => setEditingId(id)}
-        />
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
+            {error}
+            <button
+              onClick={refetch}
+              className="ml-2 underline hover:no-underline"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {loading && (
+          <div className="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
+            <p className="text-gray-600 text-sm">Loading applications...</p>
+          </div>
+        )}
+
+        {!loading && (
+          <>
+            <StatsBar applications={applications} />
+            <ApplicationForm
+              key={editingId || "new"}
+              onAdd={(newApp) => setApplications((prev) => [...prev, newApp])}
+              editingId={editingId}
+              applications={applications}
+              onSaveEdit={(id, updatedFields) => {
+                setApplications((prev) =>
+                  prev.map((app) =>
+                    app.id === id ? { ...app, ...updatedFields } : app,
+                  ),
+                );
+                setEditingId(null);
+              }}
+              onCancelEdit={() => setEditingId(null)}
+            />
+            <ApplicationList
+              applications={applications}
+              onDelete={(id) =>
+                setApplications((prev) => prev.filter((app) => app.id !== id))
+              }
+              onStartEdit={(id) => setEditingId(id)}
+            />
+          </>
+        )}
       </main>
     </div>
   );
